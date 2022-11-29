@@ -40,12 +40,12 @@ type StdComparableString string
 
 func (self StdComparableString) Compare(otherV ComparableValue) int {
 	other := otherV.(StdComparableString)
-	return strings.Compare(string(self), string(other))
+	return strings.Compare(strings.ToLower(string(self)), strings.ToLower(string(other)))
 }
 
 func (self StdComparableString) Contains(otherV ComparableValue) bool {
 	other := otherV.(StdComparableString)
-	return strings.Contains(string(self), string(other))
+	return strings.Contains(strings.ToLower(string(self)), strings.ToLower(string(other)))
 }
 
 // StdComparableRFC3339Timestamp takes RFC3339 Timestamp strings and compares them as TIMES. In case of time parsing error compares values as strings.

@@ -16,6 +16,7 @@ package pod
 
 import (
 	"fmt"
+	"strings"
 
 	v1 "k8s.io/api/core/v1"
 
@@ -172,6 +173,14 @@ func getPodStatusPhase(pod v1.Pod, warnings []common.Event) v1.PodPhase {
 	return v1.PodPending
 }
 
+func makeMapOfStringsComparable(m map[string]string) dataselect.StdComparableString {
+	pairs := []string{}
+	for key, value := range m {
+		pairs = append(pairs, fmt.Sprintf("%v:%v", key, value))
+	}
+	return dataselect.StdComparableString(strings.Join(pairs, "|")) // use uncommon value as separator
+}
+
 // The code below allows to perform complex data section on []api.Pod
 
 type PodCell v1.Pod
@@ -186,6 +195,10 @@ func (self PodCell) GetProperty(name dataselect.PropertyName) dataselect.Compara
 		return dataselect.StdComparableTime(self.ObjectMeta.CreationTimestamp.Time)
 	case dataselect.NamespaceProperty:
 		return dataselect.StdComparableString(self.ObjectMeta.Namespace)
+	case dataselect.LabelsProperty:
+		return makeMapOfStringsComparable(self.ObjectMeta.GetLabels())
+	case dataselect.AnnotationsProperty:
+		return makeMapOfStringsComparable(self.ObjectMeta.GetAnnotations())
 	default:
 		// if name is not supported then just return a constant dummy value, sort will have no effect.
 		return nil

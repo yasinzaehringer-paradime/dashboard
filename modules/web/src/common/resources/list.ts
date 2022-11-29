@@ -279,7 +279,21 @@ export abstract class ResourceListBase<T extends ResourceList, R extends Resourc
       result = params;
     }
 
-    const filterByQuery = this.cardFilter_.query ? `name,${this.cardFilter_.query}` : '';
+    // "somepod labels:somelabel" -> "name,somepod,labels,somelabel"
+    let filterByQuery = '';
+    if (this.cardFilter_.query) {
+      const parts = this.cardFilter_.query.split(" ")
+      let filterByQueryList: string[] = []
+      parts.forEach( (part) => {
+          const filterPart = part.split(":",2)
+          if (filterPart.length == 2) {
+              filterByQueryList.push(filterPart[0] + "," + filterPart[1])
+          } else if (filterPart.length == 1) {
+              filterByQueryList.push("name," + filterPart[0])
+          }
+      })
+      filterByQuery = filterByQueryList.join(",")
+    }
     if (filterByQuery) {
       return result.set('filterBy', filterByQuery);
     }

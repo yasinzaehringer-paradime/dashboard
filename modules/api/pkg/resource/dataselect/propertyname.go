@@ -23,6 +23,8 @@ const (
 	NameProperty              = "name"
 	CreationTimestampProperty = "creationTimestamp"
 	NamespaceProperty         = "namespace"
+	LabelsProperty            = "labels"
+	AnnotationsProperty       = "annotations"
 	StatusProperty            = "status"
 	TypeProperty              = "type"
 	FirstSeenProperty         = "firstSeen"
